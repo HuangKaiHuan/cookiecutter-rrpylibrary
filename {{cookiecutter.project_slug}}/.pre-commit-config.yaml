@@ -1,0 +1,54 @@
+# See https://pre-commit.com/ for usage and config
+exclude: |
+  (?x)^(
+      docs/|
+      src/{{cookiecutter.project_slug}}/_version.py|
+      versioneer.py|
+      setup.py
+  )
+repos:
+- repo: local
+  hooks:
+  - id: isort
+    name: isort
+    stages: [commit]
+    language: system
+    entry: isort
+    types: [python]
+
+  - id: black
+    name: black
+    stages: [commit]
+    language: system
+    entry: black
+    types: [python]
+
+  - id: flake8
+    name: flake8
+    stages: [commit]
+    language: system
+    entry: flake8
+    types: [python]
+
+  - id: mypy
+    name: mypy
+    stages: [commit]
+    language: system
+    entry: mypy
+    types: [python]
+    require_serial: true
+
+  - id: gitlint
+    name: gitlint
+    stages: [commit-msg]
+    language: system
+    entry: gitlint
+    args: [--contrib=CT1, --ignore=B6, --msg-filename]
+
+  - id: test
+    name: test
+    stages: [push]
+    language: system
+    entry: tox
+    types: [python]
+    pass_filenames: false

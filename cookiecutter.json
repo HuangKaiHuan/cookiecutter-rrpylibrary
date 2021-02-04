@@ -1,0 +1,23 @@
+{
+    "full_name": "Huang Kai Huan",
+    "email": "huang_kh@robotics.robotics.com",
+    "repo_protocol": ["http", "https"],
+    "repo_hosting_domain": "192.168.16.33",
+    "repo_username": "huang_kh",
+    "project_name": "Nameless",
+    "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+    "project_short_description": "An example package. Generated with cookiecutter-rrpylibrary.",
+
+    "create_author_file": "y",
+    "sphinx_docs": "y",
+    "sphinx_docs_hosting": "http://192.168.16.36:10080/{{ cookiecutter.project_slug }}/",
+    "open_source_license": [
+        "Not open source",
+        "MIT license",
+        "BSD license",
+        "ISC license",
+        "Apache Software License 2.0",
+        "GNU General Public License v3"
+    ],
+    "gitlab_ci": "y"
+}

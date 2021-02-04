@@ -1,0 +1,23 @@
+graft docs
+graft src
+graft ci
+graft tests
+
+include .coveragerc
+include .gitattributes
+include .gitchangelog.rc
+include .pre-commit-config.yaml
+
+include AUTHORS.rst
+include CHANGELOG.rst
+include CONTRIBUTING.rst
+include LICENSE
+include pyproject.toml
+include README.rst
+include tasks.py
+include tox.ini
+
+global-exclude *.py[cod] __pycache__/* *.so *.dylib
+
+include versioneer.py
+include src/{{cookiecutter.project_slug}}/_version.py

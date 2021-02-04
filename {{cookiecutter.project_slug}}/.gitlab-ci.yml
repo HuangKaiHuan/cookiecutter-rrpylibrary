@@ -1,0 +1,80 @@
+image: 192.168.16.36:5000/cicd
+
+stages:
+  - lint
+  - test
+  {%- if cookiecutter.sphinx_docs == "y" %}
+  - docs
+  {%- endif %}
+  - deploy
+
+lint:
+  before_script:
+    - pyenv local 3.6.7 3.7.6
+    - python -V
+    - export LC_ALL=C.UTF-8
+    - export LANG=C.UTF-8
+  stage: lint
+  script:
+    - pip install -e .[dev]
+    - pre-commit run -a
+    - invoke lint-commit
+  tags:
+    - docker
+    - global
+
+test:
+  before_script:
+    - pyenv local 3.6.7 3.7.6
+    - python -V
+  stage: test
+  script:
+    - tox
+  tags:
+    - docker
+    - global
+
+{%- if cookiecutter.sphinx_docs == "y" %}
+
+build_docs:
+  before_script:
+    - pyenv local 3.6.7 3.7.6
+    - python -V
+  stage: docs
+  script:
+    - tox -e docs
+  artifacts:
+    paths:
+      - docs/_build
+    expire_in: 3 day
+  tags:
+    - docker
+    - global
+  only:
+    - tags
+
+publish_docs:
+  stage: deploy
+  script:
+    - rm -rf /home/pi/website/{{ cookiecutter.project_slug }}
+    - mv docs/_build /home/pi/website/{{ cookiecutter.project_slug }}
+  dependencies:
+    - build_docs
+  tags:
+    - website
+  only:
+    - tags
+{%- endif %}
+
+upload_pypi:
+  before_script:
+    - pyenv local 3.6.7 3.7.6
+    - python -V
+  stage: deploy
+  script:
+    - python setup.py sdist upload -r local
+  only:
+    - tags
+  tags:
+    - docker
+    - global

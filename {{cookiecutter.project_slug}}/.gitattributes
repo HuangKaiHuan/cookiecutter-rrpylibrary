@@ -1,0 +1,1 @@
+src/{{cookiecutter.project_slug}}/_version.py export-subst
