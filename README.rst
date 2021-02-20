@@ -30,6 +30,8 @@ Features
 - Managing test environments with tox_
 - Generating docs with sphinx_ (optional)
 - Continuous Integration with gitlab-ci_ (optional)
+- Auto upload package to inter pypi (use gitlab-ci)
+- Auto upload document to inter website (use gitlab-ci)
 
 .. _black: https://github.com/psf/black
 .. _isort: https://github.com/PyCQA/isort
