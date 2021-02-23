@@ -17,7 +17,7 @@ Documentation
 {% else %}
 To use the project::
 
-    import {{ cookiecutter.package_name }}
+    import {{ cookiecutter.project_slug }}
 
 {% endif %}
 

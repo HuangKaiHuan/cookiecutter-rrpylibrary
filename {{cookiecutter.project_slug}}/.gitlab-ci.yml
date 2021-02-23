@@ -63,13 +63,13 @@ deploy:
   script:
     - python setup.py sdist upload -r devpi
     - python setup.py sdist upload -r local
-    {%- if cookiecutter.sphinx_docs == "y" %}
+{%- if cookiecutter.sphinx_docs == "y" %}
     - python setup.py upload_docs --upload-dir docs/_build -r devpi
-    {%- endif %}
   dependencies:
     - build_docs
+{%- endif %}
   tags:
-    - docker
-    - local
+      - docker
+      - local
   only:
     - tags
