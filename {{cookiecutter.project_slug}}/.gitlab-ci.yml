@@ -10,7 +10,7 @@ stages:
 
 lint:
   before_script:
-    - pyenv local 3.6.7 3.7.6
+    - pyenv local 3.6.7 3.7.6 3.8.7
     - python -V
     - export LC_ALL=C.UTF-8
     - export LANG=C.UTF-8
@@ -21,24 +21,24 @@ lint:
     - invoke lint-commit
   tags:
     - docker
-    - global
+    - local
 
 test:
   before_script:
-    - pyenv local 3.6.7 3.7.6
+    - pyenv local 3.6.7 3.7.6 3.8.7
     - python -V
   stage: test
   script:
     - tox
   tags:
     - docker
-    - global
+    - local
 
 {%- if cookiecutter.sphinx_docs == "y" %}
 
 build_docs:
   before_script:
-    - pyenv local 3.6.7 3.7.6
+    - pyenv local 3.6.7 3.7.6 3.8.7
     - python -V
   stage: docs
   script:
@@ -49,32 +49,27 @@ build_docs:
     expire_in: 3 day
   tags:
     - docker
-    - global
+    - local
   only:
     - tags
 
-publish_docs:
-  stage: deploy
-  script:
-    - rm -rf /home/pi/website/{{ cookiecutter.project_slug }}
-    - mv docs/_build /home/pi/website/{{ cookiecutter.project_slug }}
-  dependencies:
-    - build_docs
-  tags:
-    - website
-  only:
-    - tags
 {%- endif %}
 
-upload_pypi:
+deploy:
   before_script:
-    - pyenv local 3.6.7 3.7.6
+    - pyenv local 3.6.7 3.7.6 3.8.7
     - python -V
   stage: deploy
   script:
+    - python setup.py sdist upload -r devpi
     - python setup.py sdist upload -r local
-  only:
-    - tags
+    {%- if cookiecutter.sphinx_docs == "y" %}
+    - python setup.py upload_docs --upload-dir docs/_build -r devpi
+    {%- endif %}
+  dependencies:
+    - build_docs
   tags:
     - docker
-    - global
+    - local
+  only:
+    - tags
