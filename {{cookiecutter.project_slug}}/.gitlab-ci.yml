@@ -3,9 +3,7 @@ image: 192.168.16.36:5000/cicd
 stages:
   - lint
   - test
-  {%- if cookiecutter.sphinx_docs == "y" %}
-  - docs
-  {%- endif %}
+  - build
   - deploy
 
 lint:
@@ -40,7 +38,7 @@ build_docs:
   before_script:
     - pyenv local 3.6.7 3.7.6 3.8.7
     - python -V
-  stage: docs
+  stage: build
   script:
     - tox -e docs
   artifacts:
@@ -55,17 +53,40 @@ build_docs:
 
 {%- endif %}
 
+build_repo:
+  image: quay.io/pypa/manylinux2010_x86_64
+  stage: build
+  script:
+    - for PIP in /opt/python/cp3{6..8}*/bin/pip; do ${PIP} install Cython -i http://192.168.3.10:3141/testuser/dev/ --trusted-host=192.168.3.10; done
+    - for PYTHON in /opt/python/cp3{6..8}*/bin/python; do ${PYTHON} setup.py bdist_wheel; done
+    - for WHL in dist/*.whl; do auditwheel repair ${WHL} -w wheelhouse; done
+  artifacts:
+    paths:
+      - wheelhouse
+    expire_in: 3 day
+  tags:
+    - docker
+    - local
+  only:
+    - tags
+
 deploy:
   before_script:
     - pyenv local 3.6.7 3.7.6 3.8.7
     - python -V
   stage: deploy
   script:
-    - python setup.py sdist upload -r devpi
-    - python setup.py sdist upload -r local
+{%- if cookiecutter.use_cython_to_project_code == "y" %}
+    - twine upload wheelhouse/*.whl -r devpi
+{%- else %}
+    - twine upload dist/* -r devpi
+{%- endif %}
 {%- if cookiecutter.sphinx_docs == "y" %}
     - python setup.py upload_docs --upload-dir docs/_build -r devpi
+{%- endif %}
   dependencies:
+    - build_repo
+{%- if cookiecutter.sphinx_docs == "y" %}
     - build_docs
 {%- endif %}
   tags:

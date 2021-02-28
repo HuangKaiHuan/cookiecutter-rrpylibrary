@@ -11,9 +11,43 @@ import sys
 if sys.version_info[:2] < (3, 6):
     raise RuntimeError("Python version >= 3.6 required.")
 
+
+{%- if cookiecutter.use_cython_to_project_code != "y" %}
 from setuptools import find_packages, setup
+{%- else %}
+from Cython.Build import cythonize
+from Cython.Distutils import build_ext
+from setuptools import setup
+from setuptools.extension import Extension
+{%- endif %}
 
 import versioneer
+
+{%- if cookiecutter.use_cython_to_project_code == "y" %}
+
+sources = ["src"]
+exclude = ["__init__.py", "_version.py"]
+
+extensions = []
+py_modules = []
+for source in sources:
+    for dir_path, folder_names, file_names in os.walk(source):
+        for file_name in file_names:
+            file_path = os.path.join(dir_path, file_name)
+            rel_path = os.path.relpath(file_path, "src")
+            file_name_no_ext = os.path.splitext(rel_path.replace(os.sep, "."))[0]
+            if file_name.endswith((".pyx", ".py")):
+                if file_name not in exclude:
+                    extension = Extension(
+                        file_name_no_ext,
+                        sources=[file_path],
+                        extra_compile_args=["-Os", "-g0"],
+                        extra_link_args=["-Wl,--strip-all"],
+                    )
+                    extensions.append(extension)
+                else:
+                    py_modules.append(file_name_no_ext)
+{%- endif %}
 
 
 def read(*names, **kwargs):
@@ -83,10 +117,21 @@ setup(
     include_package_data=True,
     keywords="{{ cookiecutter.project_slug }}",
     name="{{ cookiecutter.project_slug }}",
-    packages=find_packages("src"),
-    package_dir={"": "src"},
     url="{{ cookiecutter.repo_protocol }}://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}",
     version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
+    cmdclass=versioneer.get_cmdclass({%- if cookiecutter.use_cython_to_project_code == "y" %}{"build_ext": build_ext}{%- endif %}),
+    package_dir={"": "src"},
+{%- if cookiecutter.use_cython_to_project_code == "y" %}
+    ext_modules=cythonize(
+        extensions,
+        build_dir="build",
+        language_level=3,
+        compiler_directives=dict(always_allow_keywords=True),
+    ),
+    py_modules=py_modules,
+    packages=[],
+{%- else %}
+    packages=find_packages("src"),
+{%- endif %}
     zip_safe=False,
 )
