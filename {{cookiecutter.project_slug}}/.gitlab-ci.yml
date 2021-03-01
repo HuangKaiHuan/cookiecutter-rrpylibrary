@@ -3,14 +3,12 @@ image: 192.168.16.36:5000/cicd
 stages:
   - lint
   - test
-  {%- if cookiecutter.sphinx_docs == "y" %}
-  - docs
-  {%- endif %}
+  - build
   - deploy
 
 lint:
   before_script:
-    - pyenv local 3.6.7 3.7.6 3.8.7
+    - pyenv local 3.7.6
     - python -V
     - export LC_ALL=C.UTF-8
     - export LANG=C.UTF-8
@@ -38,9 +36,8 @@ test:
 
 build_docs:
   before_script:
-    - pyenv local 3.6.7 3.7.6 3.8.7
-    - python -V
-  stage: docs
+    - pyenv local 3.7.6
+  stage: build
   script:
     - tox -e docs
   artifacts:
@@ -55,17 +52,64 @@ build_docs:
 
 {%- endif %}
 
+{%- if cookiecutter.use_cython_to_project_code == "y" %}
+
+build_repo:
+  image: 192.168.16.36:5000/manylinux1_x86_64
+  stage: build
+  variables:
+    PYPI_INDEX: http://192.168.16.34:3141/rrlibrary/dev/
+    TRUSTED_HOST: 192.168.16.34
+  script:
+    - for PIP in /opt/python/cp3{6..8}*/bin/pip; do ${PIP} install Cython -i ${PYPI_INDEX} --trusted-host=${TRUSTED_HOST}; done
+    - for PYTHON in /opt/python/cp3{6..8}*/bin/python; do ${PYTHON} setup.py bdist_wheel; done
+    - for WHL in dist/*.whl; do auditwheel repair ${WHL} -w wheelhouse; done
+  artifacts:
+    paths:
+      - wheelhouse
+    expire_in: 3 day
+  tags:
+    - docker
+    - local
+  only:
+    - tags
+{%- else %}
+
+build_repo:
+  stage: build
+  before_script:
+    - pyenv local 3.7.6
+  script:
+    - python setup.py sdist
+  artifacts:
+    paths:
+      - dist
+    expire_in: 3 day
+  tags:
+    - docker
+    - local
+  only:
+    - tags
+{%- endif %}
+
 deploy:
   before_script:
-    - pyenv local 3.6.7 3.7.6 3.8.7
-    - python -V
+    - pyenv local 3.7.6
   stage: deploy
   script:
-    - python setup.py sdist upload -r devpi
-    - python setup.py sdist upload -r local
+    - pip install twine
+{%- if cookiecutter.use_cython_to_project_code == "y" %}
+    - pip install cython
+    - twine upload wheelhouse/*.whl -r devpi
+{%- else %}
+    - twine upload dist/* -r devpi
+{%- endif %}
 {%- if cookiecutter.sphinx_docs == "y" %}
     - python setup.py upload_docs --upload-dir docs/_build -r devpi
+{%- endif %}
   dependencies:
+    - build_repo
+{%- if cookiecutter.sphinx_docs == "y" %}
     - build_docs
 {%- endif %}
   tags:
