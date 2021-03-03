@@ -34,18 +34,18 @@ Features
 - Auto upload document to inter website (use gitlab-ci)
 - Protect python codebase with Cython (optional)
 
-.. _black: https://github.com/psf/black
-.. _isort: https://github.com/PyCQA/isort
-.. _mypy: https://github.com/python/mypy
-.. _flake8: https://github.com/PyCQA/flake8
-.. _pre-commit: https://github.com/pre-commit/pre-commit
+.. _black: https://black.readthedocs.io/en/stable/index.html
+.. _isort: https://pycqa.github.io/isort/
+.. _mypy: https://mypy.readthedocs.io/en/stable/index.html
+.. _flake8: https://flake8.pycqa.org/en/latest/
+.. _pre-commit: https://pre-commit.com/
 .. _versioneer: https://github.com/python-versioneer/python-versioneer
-.. _gitlint: https://github.com/jorisroovers/gitlint
+.. _gitlint: https://jorisroovers.com/gitlint/
 .. _gitchanglog: https://github.com/vaab/gitchangelog
-.. _invoke: https://github.com/pyinvoke/invoke
-.. _pytest: https://github.com/pytest-dev/pytest
-.. _tox: https://github.com/tox-dev/tox
-.. _sphinx: https://github.com/sphinx-doc/sphinx
+.. _invoke: https://www.pyinvoke.org/
+.. _pytest: https://docs.pytest.org/en/stable/
+.. _tox: https://tox.readthedocs.io/en/latest/
+.. _sphinx: https://www.sphinx-doc.org/en/master/
 .. _gitlab-ci: https://docs.gitlab.com/ee/ci/
 
 
