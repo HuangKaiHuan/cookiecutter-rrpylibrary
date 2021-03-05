@@ -41,7 +41,9 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
+{%- if cookiecutter.use_cython_to_project_code == "y" %}
     'sphinx.ext.viewcode',
+{%- endif %}
 ]
 
 # Add any paths that contain templates here, relative to this directory.
