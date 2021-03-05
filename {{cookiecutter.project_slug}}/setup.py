@@ -12,7 +12,7 @@ if sys.version_info[:2] < (3, 6):
     raise RuntimeError("Python version >= 3.6 required.")
 
 
-{%- if cookiecutter.use_cython_to_project_code != "y" %}
+{%- if cookiecutter.use_cython_to_protect_code != "y" %}
 from setuptools import find_packages, setup
 {%- else %}
 from Cython.Build import cythonize
@@ -23,7 +23,7 @@ from setuptools.extension import Extension
 
 import versioneer
 
-{%- if cookiecutter.use_cython_to_project_code == "y" %}
+{%- if cookiecutter.use_cython_to_protect_code == "y" %}
 
 sources = ["src"]
 exclude = ["__init__.py", "_version.py"]
@@ -118,9 +118,9 @@ setup(
     name="{{ cookiecutter.project_slug }}",
     url="{{ cookiecutter.repo_protocol }}://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}",
     version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass({%- if cookiecutter.use_cython_to_project_code == "y" %}{"build_ext": build_ext}{%- endif %}),
+    cmdclass=versioneer.get_cmdclass({%- if cookiecutter.use_cython_to_protect_code == "y" %}{"build_ext": build_ext}{%- endif %}),
     package_dir={"": "src"},
-{%- if cookiecutter.use_cython_to_project_code == "y" %}
+{%- if cookiecutter.use_cython_to_protect_code == "y" %}
     ext_modules=cythonize(
         extensions,
         build_dir="build",

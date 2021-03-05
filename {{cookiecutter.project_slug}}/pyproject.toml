@@ -2,7 +2,7 @@
 requires = [
     "setuptools>=30.3.0",
     "wheel",
-{%- if cookiecutter.use_cython_to_project_code == "y" %}
+{%- if cookiecutter.use_cython_to_protect_code == "y" %}
     "Cython~=0.29.22",
 {%- endif %}
 ]

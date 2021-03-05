@@ -52,7 +52,7 @@ build_docs:
 
 {%- endif %}
 
-{%- if cookiecutter.use_cython_to_project_code == "y" %}
+{%- if cookiecutter.use_cython_to_protect_code == "y" %}
 
 build_repo:
   image: 192.168.16.36:5000/manylinux1_x86_64
@@ -98,7 +98,7 @@ deploy:
   stage: deploy
   script:
     - pip install twine
-{%- if cookiecutter.use_cython_to_project_code == "y" %}
+{%- if cookiecutter.use_cython_to_protect_code == "y" %}
     - pip install cython
     - twine upload wheelhouse/*.whl -r devpi
 {%- else %}

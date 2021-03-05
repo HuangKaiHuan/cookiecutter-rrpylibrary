@@ -41,7 +41,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
-{%- if cookiecutter.use_cython_to_project_code == "y" %}
+{%- if cookiecutter.use_cython_to_protect_code == "y" %}
     'sphinx.ext.viewcode',
 {%- endif %}
 ]
