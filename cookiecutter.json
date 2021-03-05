@@ -11,6 +11,7 @@
     "create_author_file": "y",
     "sphinx_docs": "y",
     "sphinx_docs_hosting": "http://192.168.16.34:3141/rrlibrary/dev/{{ cookiecutter.project_slug }}/latest/",
+    "use_sphinx_docs_autoapi": ["n", "y"],
     "open_source_license": [
         "Not open source",
         "MIT license",

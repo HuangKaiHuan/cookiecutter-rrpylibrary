@@ -44,7 +44,16 @@ extensions = [
 {%- if cookiecutter.use_cython_to_protect_code == "y" %}
     'sphinx.ext.viewcode',
 {%- endif %}
+
+{%- if cookiecutter.use_sphinx_docs_autoapi == "y" %}
+    'autoapi.extension',
+{%- endif %}
 ]
+
+{%- if cookiecutter.use_sphinx_docs_autoapi == "y" %}
+
+autoapi_dirs = ['../src']
+{%- endif %}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
