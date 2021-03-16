@@ -59,7 +59,7 @@ Quickstart
     python -m pipx ensurepath
 
     # Use cookiecutter to create project from this template
-    pipx run cookiecutter gh:HuangKaiHuan/cookiecutter-rrpylibrary.git
+    pipx run cookiecutter gh:HuangKaiHuan/cookiecutter-rrpylibrary
 
     # Push initial commit
     cd existing_folder
