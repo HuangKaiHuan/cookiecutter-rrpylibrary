@@ -12,12 +12,8 @@ if sys.version_info[:2] < (3, 6):
     raise RuntimeError("Python version >= 3.6 required.")
 
 
-{%- if cookiecutter.use_cython_to_protect_code != "y" %}
 from setuptools import find_packages, setup
-{%- else %}
-from Cython.Build import cythonize
-from Cython.Distutils import build_ext
-from setuptools import setup
+{%- if cookiecutter.use_cython_to_protect_code == "y" %}
 from setuptools.extension import Extension
 {%- endif %}
 
@@ -90,47 +86,78 @@ extras_require = {
     "GNU General Public License v3": "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
 } %}
 
-setup(
-    author="{{ cookiecutter.full_name.replace("\"", "\\\"") }}",
-    author_email="{{ cookiecutter.email }}",
-    python_requires=">=3.6",
-    classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
-        "Intended Audience :: Developers",
+
+def setup_package():
+    metadata = dict(
+        author="{{ cookiecutter.full_name.replace("\"", "\\\"") }}",
+        author_email="{{ cookiecutter.email }}",
+        python_requires=">=3.6",
+        classifiers=[
+            "Development Status :: 2 - Pre-Alpha",
+            "Intended Audience :: Developers",
 {%- if cookiecutter.open_source_license in license_classifiers %}
-        "{{ license_classifiers[cookiecutter.open_source_license] }}",
+            "{{ license_classifiers[cookiecutter.open_source_license] }}",
 {%- endif %}
-        "Natural Language :: English",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-    ],
-    description="{{ cookiecutter.project_short_description }}",
-    install_requires=install_requires,
-    extras_require=extras_require,
+            "Natural Language :: English",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.8",
+        ],
+        description="{{ cookiecutter.project_short_description }}",
+        install_requires=install_requires,
+        extras_require=extras_require,
 {%- if cookiecutter.open_source_license in license_classifiers %}
-    license="{{ cookiecutter.open_source_license }}",
+        license="{{ cookiecutter.open_source_license }}",
 {%- endif %}
-    long_description=readme + "\n\n" + changelog,
-    include_package_data=True,
-    keywords="{{ cookiecutter.project_slug }}",
-    name="{{ cookiecutter.project_slug }}",
-    url="{{ cookiecutter.repo_protocol }}://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}",
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass({%- if cookiecutter.use_cython_to_protect_code == "y" %}{"build_ext": build_ext}{%- endif %}),
-    package_dir={"": "src"},
+        long_description=readme + "\n\n" + changelog,
+        include_package_data=True,
+        keywords="{{ cookiecutter.project_slug }}",
+        name="{{ cookiecutter.project_slug }}",
+        url="{{ cookiecutter.repo_protocol }}://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}",
+        version=versioneer.get_version(),
+        package_dir={"": "src"},
+        zip_safe=False,
+{%- if cookiecutter.use_cython_to_protect_code != "y" %}
+        cmdclass=versioneer.get_cmdclass(),
+        packages=find_packages("src"),
+{%- endif %}
+    )
+
 {%- if cookiecutter.use_cython_to_protect_code == "y" %}
-    ext_modules=cythonize(
-        extensions,
-        build_dir="build",
-        language_level=3,
-        compiler_directives=dict(always_allow_keywords=True),
-    ),
-    py_modules=py_modules,
-    packages=[],
-{%- else %}
-    packages=find_packages("src"),
+    args = sys.argv[1:]
+    build_command = ["build", "build_ext", "build_py", "bdist_wheel"]
+    run_build = False
+    for command in build_command:
+        if command in args:
+            run_build = True
+
+    if run_build:
+        from Cython.Build import build_ext, cythonize
+        from Cython.Compiler import Options
+
+        Options.docstrings = False
+        compiler_directives = {
+            "optimize.unpack_method_calls": False,
+            "always_allow_keywords": True,
+        }
+        metadata["ext_modules"] = cythonize(
+            extensions,
+            build_dir="build",
+            language_level=3,
+            compiler_directives=compiler_directives,
+        )
+        metadata["py_modules"] = py_modules
+        metadata["packages"] = []
+        cmdclass = versioneer.get_cmdclass({"build_ext": build_ext})
+    else:
+        cmdclass = versioneer.get_cmdclass()
+        metadata["packages"] = find_packages("src")
+    metadata["cmdclass"] = cmdclass
 {%- endif %}
-    zip_safe=False,
-)
+
+    setup(**metadata)
+
+
+if __name__ == "__main__":
+    setup_package()
