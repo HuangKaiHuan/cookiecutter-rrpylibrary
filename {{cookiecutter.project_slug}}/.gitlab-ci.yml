@@ -16,7 +16,7 @@ lint:
   script:
     - pip install -e .[dev]
     - pre-commit run -a
-    - invoke lint-commit
+    - gitlint --commits HEAD
   tags:
     - docker
     - local

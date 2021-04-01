@@ -58,10 +58,3 @@ def bumpversion(c, part):
     c.run("git add CHANGELOG.rst")
     c.run(f"git commit -m 'chore: bump version -> {new_version}'")
     c.run(f"git tag -f {new_version}")
-
-
-@task
-def lint_commit(c):
-    git_rev_list_result = c.run("git rev-list --max-parents=0 HEAD")
-    first_commit_sha = git_rev_list_result.stdout.splitlines()[0]
-    c.run(f"gitlint --commits '{first_commit_sha}..HEAD'")
