@@ -1,3 +1,6 @@
+import shutil
+from pathlib import Path
+
 from invoke import task
 
 import versioneer
@@ -58,3 +61,23 @@ def bumpversion(c, part):
     c.run("git add CHANGELOG.rst")
     c.run(f"git commit -m 'chore: bump version -> {new_version}'")
     c.run(f"git tag -f {new_version}")
+
+
+@task
+def init_repo(c):
+    git_path = Path(".git")
+    if git_path.exists():
+        user_input = input(
+            ".git repo already exists, do you want to delete it? yes/no : "
+        ).lower()
+        if user_input in ["y", "yes"]:
+            shutil.rmtree(git_path.as_posix())
+        else:
+            return
+    c.run("git init")
+    c.run("pre-commit install -t pre-commit")
+    c.run("pre-commit install -t pre-push")
+    c.run("pre-commit install -t commit-msg")
+    c.run("git add .")
+    c.run("git commit -m 'chore: First commit'")
+    c.run("git tag 0.1.0")

@@ -61,12 +61,8 @@ Quickstart
     # Use cookiecutter to create project from this template
     pipx run cookiecutter gh:HuangKaiHuan/cookiecutter-rrpylibrary
 
-    # Push initial commit
+    # cd to the project root
     cd existing_folder
-    git init
-    git add .
-    git commit -m "First commit"
-    git tag 0.1.0 (must 0.1.0)
 
     # create virtualenv(recommend)
     python -m venv venv
@@ -75,7 +71,14 @@ Quickstart
     # install dependencies
     pip install -e .[dev]
 
-    # setup pre-commit, pre-push, commit-msg hooks
+    # auto init the repo by invoke command
+    inv init-repo
+
+    # or you can run command step by step
+    git init
+    git add .
+    git commit -m "chore: First commit"
+    git tag 0.1.0 # (must 0.1.0)
     pre-commit install -t pre-commit
     pre-commit install -t pre-push
     pre-commit install -t commit-msg
