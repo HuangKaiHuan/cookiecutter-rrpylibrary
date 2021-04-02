@@ -21,5 +21,5 @@
         "GNU General Public License v3"
     ],
     "gitlab_ci": "y",
-    "use_cython_to_protect_code": ["y", "y"]
+    "use_cython_to_protect_code": ["n", "y"]
 }

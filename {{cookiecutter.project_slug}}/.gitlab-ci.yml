@@ -99,7 +99,6 @@ deploy:
   script:
     - pip install twine
 {%- if cookiecutter.use_cython_to_protect_code == "y" %}
-    - pip install cython
     - twine upload wheelhouse/*.whl -r devpi
 {%- else %}
     - twine upload dist/* -r devpi
