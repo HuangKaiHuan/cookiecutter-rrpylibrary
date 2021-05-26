@@ -1,6 +1,7 @@
 import shutil
 from pathlib import Path
 
+from gitchangelog import gitchangelog
 from invoke import task
 
 import versioneer
@@ -26,10 +27,37 @@ def build(c, docs=False):
         c.run("tox -e docs")
 
 
+def _analysis_bump_part(c, tag):
+    git_log_result = c.run(f"git log --pretty=format:%s --no-merges {tag}..HEAD")
+
+    config = gitchangelog.load_config_file(
+        ".gitchangelog.rc", fail_if_not_present=False
+    )
+    config = gitchangelog.Config(config)
+    section_regexps = config["section_regexps"]
+
+    part_dict = {"Bug Fixes": "patch", "Features": "minor", "BREAKING CHANGE": "major"}
+
+    part_level_dict = {
+        "auto": 0,
+        "patch": 1,
+        "minor": 2,
+        "major": 3,
+    }
+    part = "auto"
+    for commit in git_log_result.stdout.splitlines():
+        part_key = gitchangelog.first_matching(section_regexps, commit)
+        if part_key:
+            part_type = part_dict[part_key]
+            if part_level_dict[part_type] > part_level_dict[part]:
+                part = part_type
+    return part
+
+
 @task(help={"part": "part of the version to be bumped"})
 def bumpversion(c, part):
-    if part not in ("major", "minor", "patch"):
-        raise ValueError('part must be one of "major", "minor", or "patch"!')
+    if part not in ("auto", "major", "minor", "patch"):
+        raise ValueError('part must be one of "auto", "major", "minor", or "patch"!')
 
     git_status_result = c.run("git status --porcelain")
     if len(git_status_result.stdout):
@@ -46,6 +74,11 @@ def bumpversion(c, part):
 
     full_version = versioneer.get_versions()["version"]
     major, minor, patch = [int(i) for i in full_version.split("+")[0].split(".")]
+    now_version = f"{major}.{minor}.{patch}"
+
+    if part == "auto":
+        part = _analysis_bump_part(c, now_version)
+
     if part == "patch":
         patch += 1
     elif part == "minor":

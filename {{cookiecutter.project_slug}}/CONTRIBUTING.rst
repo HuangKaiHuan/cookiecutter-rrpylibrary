@@ -89,7 +89,7 @@ A reminder for the maintainers on how to deploy.
 Make sure all your changes are committed.
 Then run::
 
-    $ invoke bumpversion patch # possible: major / minor / patch
+    $ invoke bumpversion patch # possible: auto / major / minor / patch
     $ git push
     $ git push --tags
 
