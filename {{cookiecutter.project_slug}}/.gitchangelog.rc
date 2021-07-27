@@ -326,7 +326,7 @@ INSERT_POINT_REGEX = r'''(?isxu)
 )
 
 (?P<rev>%(rev)s)
-''' % {'rev': r"[0-9]+\.[0-9]+\.[0-9]+?"}
+''' % {'rev': r"[0-9]+\.[0-9]+\.[0-9]+"}
 
 revs = [
     Caret(FileFirstRegexMatch(OUTPUT_FILE, INSERT_POINT_REGEX)),
