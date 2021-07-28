@@ -9,7 +9,7 @@ Cookiecutter_ template for a RR Python library.
 Notes:
 
 - Support python3.6+ only
-- If you have a application(not a library) you might want to take a look at RRPyApplication_ [no yet complete]
+- If you have a application(not a library) you might want to take a look at RRPyApplication_
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _RRPyApplication: https://github.com/HuangKaiHuan/cookiecutter-rrpyapplication.git
