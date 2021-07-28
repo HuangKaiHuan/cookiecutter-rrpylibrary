@@ -45,8 +45,9 @@ Ready to contribute? Here's how to set up `{{ cookiecutter.project_slug }}` for 
 3. Install your local copy into a virtualenv. ::
 
     $ cd {{ cookiecutter.project_slug }}/
-    $ python -m venv venv
+    $ python3 -m venv venv
     $ source venv/bin/activate
+    $ pip install -U pip
     $ pip install -e .[dev]
 
 4. Setup pre-commit, pre-push, commit-msg hooks::

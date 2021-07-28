@@ -7,7 +7,7 @@
     "project_name": "Nameless",
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
     "project_short_description": "An example package. Generated with cookiecutter-rrpylibrary.",
-
+    "version": "0.1.0",
     "create_author_file": "y",
     "sphinx_docs": "y",
     "sphinx_docs_hosting": "http://192.168.16.34:3141/rrlibrary/dev/{{ cookiecutter.project_slug }}/latest/",

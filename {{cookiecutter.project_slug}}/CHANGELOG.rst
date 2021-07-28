@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1.0 ({% now 'local' %})
+{{ cookiecutter.version }} ({% now 'local' %})
 ------------------
 
 * First commit.

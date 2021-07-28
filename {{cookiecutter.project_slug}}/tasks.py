@@ -113,4 +113,4 @@ def init_repo(c):
     c.run("pre-commit install -t commit-msg")
     c.run("git add .")
     c.run("git commit -m 'chore: First commit'")
-    c.run("git tag 0.1.0")
+    c.run("git tag {{ cookiecutter.version }}")

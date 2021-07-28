@@ -13,3 +13,15 @@ if not re.match(MODULE_REGEX, module_name):
 
     # Exit to cancel project
     sys.exit(1)
+
+VERSION_REGEX = r"\d+.\d+.\d+$"
+
+version = "{{ cookiecutter.version }}"
+if not re.match(VERSION_REGEX, version):
+    print(
+        "ERROR: The version (%s) is not a valid version. It must be major.minor.patch style. eg. 0.1.0"
+        % version
+    )
+
+    # Exit to cancel project
+    sys.exit(1)
