@@ -13,7 +13,7 @@ Documentation
 =============
 
 {% if cookiecutter.sphinx_docs == "y" %}
-{{ cookiecutter.sphinx_docs_hosting }}
+`Read the documentation <{{ cookiecutter.sphinx_docs_hosting }}>`_
 {% else %}
 To use the project::
 
