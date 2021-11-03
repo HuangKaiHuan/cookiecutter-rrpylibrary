@@ -65,13 +65,6 @@ def bumpversion(c, part):
             f"Git working directory is not clean:\n{git_status_result.stdout}"
         )
 
-    c.run("gitchangelog")
-    git_status_result = c.run("git status --porcelain")
-    if len(git_status_result.stdout) == 0:
-        raise RuntimeError(
-            "Empty Change! you must have at least one commit type of fix, feat or breaking change"
-        )
-
     full_version = versioneer.get_versions()["version"]
     major, minor, patch = [int(i) for i in full_version.split("+")[0].split(".")]
     now_version = f"{major}.{minor}.{patch}"
@@ -84,13 +77,24 @@ def bumpversion(c, part):
     elif part == "minor":
         minor += 1
         patch = 0
-    else:
+    elif part == "major":
         major += 1
         minor = 0
         patch = 0
+    else:
+        raise RuntimeError(
+            "Empty Change! you must have at least one commit type of fix, feat or breaking change"
+        )
+
     new_version = f"{major}.{minor}.{patch}"
     c.run(f"git tag {new_version}")
     c.run("gitchangelog")
+    git_status_result = c.run("git status --porcelain")
+    if len(git_status_result.stdout) == 0:
+        c.run(f"git tag -d {new_version}")
+        raise RuntimeError(
+            "Empty Change! you must have at least one commit type of fix, feat or breaking change"
+        )
     c.run("git add CHANGELOG.rst")
     c.run(f"git commit -m 'chore: bump version -> {new_version}'")
     c.run(f"git tag -f {new_version}")
