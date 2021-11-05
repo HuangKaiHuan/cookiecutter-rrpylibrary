@@ -47,7 +47,8 @@ extensions = [
 
 {%- if cookiecutter.use_sphinx_docs_autoapi == "y" %}
     'autoapi.extension',
-{%- endif %}
+    "myst_parser",
+    {%- endif %}
 ]
 
 {%- if cookiecutter.use_sphinx_docs_autoapi == "y" %}
