@@ -72,7 +72,6 @@ extras_require = {
         "pytest-cov==2.11.1",
         "tox~=3.21.0",
         "gitchangelog==3.0.4",
-        "gitlint==0.15.0",
         "invoke==1.5.0",
     ]
 }

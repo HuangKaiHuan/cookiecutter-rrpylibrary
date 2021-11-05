@@ -42,8 +42,8 @@ repos:
     name: gitlint
     stages: [commit-msg]
     language: system
-    entry: gitlint
-    args: [--contrib=CT1, --ignore=B6, --msg-filename]
+    entry: tox
+    args: [-e gitlint, --, --msg-filename]
 
   - id: test
     name: test

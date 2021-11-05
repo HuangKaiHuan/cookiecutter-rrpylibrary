@@ -17,7 +17,7 @@ lint:
     - pip install -U pip
     - pip install -e .[dev]
     - pre-commit run -a
-    - gitlint --commits HEAD
+    - tox -e gitlint -- --commits HEAD
   tags:
     - docker
     - local
