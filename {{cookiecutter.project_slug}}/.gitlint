@@ -1,6 +1,5 @@
 [general]
 ignore=B6
-contrib=CT1
 
 # verbosity should be a value between 1 and 3, the commandline -v flags take
 # precedence over this
