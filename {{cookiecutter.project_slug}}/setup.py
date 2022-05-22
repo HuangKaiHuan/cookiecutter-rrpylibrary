@@ -63,7 +63,7 @@ install_requires = [
 
 extras_require = {
     "dev": [
-        "black==20.8b1",
+        "black==22.3.0",
         "isort==5.7.0",
         "flake8==3.8.4",
         "mypy==0.800",
