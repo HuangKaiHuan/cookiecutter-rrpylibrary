@@ -1,5 +1,6 @@
 [general]
 ignore=B6
+contrib=CT1
 
 # verbosity should be a value between 1 and 3, the commandline -v flags take
 # precedence over this
@@ -10,3 +11,6 @@ ignore-merge-commits=true
 ignore-revert-commits=true
 ignore-fixup-commits=true
 ignore-squash-commits=true
+
+[ignore-by-title]
+regex=^First commit|^Merge
