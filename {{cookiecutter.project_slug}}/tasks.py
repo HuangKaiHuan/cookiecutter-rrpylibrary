@@ -116,5 +116,10 @@ def init_repo(c):
     c.run("pre-commit install -t pre-push")
     c.run("pre-commit install -t commit-msg")
     c.run("git add .")
-    c.run("git commit -m 'chore: First commit'")
-    c.run("git tag {{ cookiecutter.version }}")
+    try:
+        c.run("git commit -m 'chore: First commit'")
+    except UnexpectedExit:
+        c.run("git add .")
+        c.run("git commit -m 'chore: First commit'")
+    finally:
+        c.run("git tag {{ cookiecutter.version }}")
