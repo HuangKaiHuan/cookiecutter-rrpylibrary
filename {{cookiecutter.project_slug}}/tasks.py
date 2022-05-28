@@ -2,7 +2,7 @@ import shutil
 from pathlib import Path
 
 from gitchangelog import gitchangelog
-from invoke import task
+from invoke import UnexpectedExit, task
 
 import versioneer
 
